@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 
 @objc(FlutterQrPlusPlugin)
-public class SwiftFlutterQrPlusPlugin: NSObject, FlutterPlugin {
+public class SwiftFlutterQrPlusPlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
 
   var factory: QRViewFactory
   public init(with registrar: FlutterPluginRegistrar) {
@@ -11,7 +11,10 @@ public class SwiftFlutterQrPlusPlugin: NSObject, FlutterPlugin {
   }
 
   public static func register(with registrar: FlutterPluginRegistrar) {
-    registrar.addApplicationDelegate(SwiftFlutterQrPlusPlugin(with: registrar))
+    let instance = SwiftFlutterQrPlusPlugin(with: registrar)
+    // Keep legacy application lifecycle support while also supporting UIScene hosts.
+    registrar.addApplicationDelegate(instance)
+    registrar.addSceneDelegate(instance)
   }
 
   public func applicationDidEnterBackground(_ application: UIApplication) {

@@ -1,5 +1,6 @@
 ## Unreleased
 
+- [iOS] Register the plugin for the `UIScene` lifecycle while retaining legacy application lifecycle registration. Document the separate host-app migration required for `UIScene` (#30).
 - [iOS] Fix the camera preview appearing upside down in landscape by preserving landscape directions when converting the window scene's interface orientation to the capture orientation (#29).
 
 ## 2.2.0

@@ -169,6 +169,19 @@ In order to use this plugin, add the following to your Info.plist file:
 <string>This app needs camera access to scan QR codes</string>
 ```
 
+### UIScene lifecycle
+
+The iOS plugin supports both the `UIScene` lifecycle and the legacy application
+lifecycle. No plugin-specific `SceneDelegate` or camera lifecycle changes are
+required.
+
+The host app must still adopt `UIScene`; updating this package alone does not
+migrate your app. Follow [Flutter's UIScene migration guide](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate)
+to configure `UIApplicationSceneManifest` in `Info.plist` and register plugins in
+`didInitializeImplicitFlutterEngine` using `engineBridge.pluginRegistry`.
+The [example AppDelegate](example/ios/Runner/AppDelegate.swift) and
+[example Info.plist](example/ios/Runner/Info.plist) already use this setup.
+
 ## Web Integration
 
 Add this to `web/index.html`:
