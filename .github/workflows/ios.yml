@@ -1,13 +1,25 @@
-name: iOS orientation tests
+name: iOS tests
 
 on:
   push:
     paths:
       - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - 'example/ios/**'
+      - 'example/lib/**'
+      - 'example/pubspec.yaml'
+      - 'tool/test_ios.sh'
       - '.github/workflows/ios.yml'
   pull_request:
     paths:
       - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - 'example/ios/**'
+      - 'example/lib/**'
+      - 'example/pubspec.yaml'
+      - 'tool/test_ios.sh'
       - '.github/workflows/ios.yml'
 
 jobs:
@@ -30,3 +42,11 @@ jobs:
         env:
           SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
         run: ios/Tests/run_orientation_tests.sh "$SIMULATOR_UDID"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Run plugin registration regression tests
+        env:
+          SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
+        run: tool/test_ios.sh "platform=iOS Simulator,id=$SIMULATOR_UDID"
