@@ -123,6 +123,7 @@ class NativeBarcodeScanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         let input = try AVCaptureDeviceInput(device: device)
         if session.canAddInput(input) {
             session.addInput(input)
+            configureInitialZoomForAutomaticCameraSwitching(on: device)
         }
 
         // Metadata output
@@ -228,6 +229,7 @@ class NativeBarcodeScanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         if let newInput = try? AVCaptureDeviceInput(device: newDevice),
            session.canAddInput(newInput) {
             session.addInput(newInput)
+            configureInitialZoomForAutomaticCameraSwitching(on: newDevice)
             camera = newPosition
         }
         session.commitConfiguration()
@@ -278,13 +280,58 @@ class NativeBarcodeScanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
 
     // MARK: - Private helpers
 
+    /// Camera types in descending preference order for the requested position.
+    /// Virtual rear cameras can switch to their ultra-wide constituent when a
+    /// close subject is inside the wide camera's minimum focus distance.
+    static func preferredDeviceTypes(
+        for position: AVCaptureDevice.Position
+    ) -> [AVCaptureDevice.DeviceType] {
+        guard position == .back else {
+            return [.builtInWideAngleCamera]
+        }
+        return [
+            .builtInTripleCamera,
+            .builtInDualWideCamera,
+            .builtInWideAngleCamera
+        ]
+    }
+
+    /// Returns the zoom factor that preserves the wide-angle field of view on a
+    /// virtual wide-plus-ultra-wide camera. AVFoundation can still switch back
+    /// to the ultra-wide constituent automatically for close-focus capture.
+    static func initialZoomFactorForAutomaticCameraSwitching(
+        deviceType: AVCaptureDevice.DeviceType,
+        switchOverFactors: [NSNumber]
+    ) -> CGFloat? {
+        guard deviceType == .builtInTripleCamera || deviceType == .builtInDualWideCamera,
+              let wideAngleZoomFactor = switchOverFactors.first else {
+            return nil
+        }
+        return CGFloat(truncating: wideAngleZoomFactor)
+    }
+
     private func captureDevice(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {
         let discoverySession = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInWideAngleCamera],
+            deviceTypes: Self.preferredDeviceTypes(for: position),
             mediaType: .video,
             position: position
         )
         return discoverySession.devices.first
+    }
+
+    private func configureInitialZoomForAutomaticCameraSwitching(on device: AVCaptureDevice) {
+        guard let zoomFactor = Self.initialZoomFactorForAutomaticCameraSwitching(
+            deviceType: device.deviceType,
+            switchOverFactors: device.virtualDeviceSwitchOverVideoZoomFactors
+        ) else { return }
+
+        do {
+            try device.lockForConfiguration()
+            defer { device.unlockForConfiguration() }
+            device.videoZoomFactor = zoomFactor
+        } catch {
+            // Keep the device's default zoom when configuration is unavailable.
+        }
     }
 
     private func currentDevice() -> AVCaptureDevice? {

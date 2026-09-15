@@ -1,5 +1,6 @@
 ## Unreleased
 
+- [iOS] Prefer virtual rear cameras that can switch to the ultra-wide lens for close-range QR scanning while preserving the standard wide-angle framing (#17).
 - [iOS] Register the plugin for the `UIScene` lifecycle while retaining legacy application lifecycle registration. Document the separate host-app migration required for `UIScene` (#30).
 - [iOS] Fix the camera preview appearing upside down in landscape by preserving landscape directions when converting the window scene's interface orientation to the capture orientation (#29).
 
