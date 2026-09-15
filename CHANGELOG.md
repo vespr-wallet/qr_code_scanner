@@ -1,3 +1,7 @@
+## Unreleased
+
+- [iOS] Register the plugin for the `UIScene` lifecycle while retaining legacy application lifecycle registration. Document the separate host-app migration required for `UIScene` (#30).
+
 ## 2.2.0
 
 - Migrated to built-in Kotlin (AGP 9.0 compatibility). Removed `apply plugin: 'kotlin-android'` and the Kotlin Gradle Plugin classpath from `android/build.gradle`; same change in the example app's `example/android/app/build.gradle`. The `kotlin.compilerOptions { jvmTarget = JVM_17 }` block is now used in place of the legacy `kotlinOptions` block.

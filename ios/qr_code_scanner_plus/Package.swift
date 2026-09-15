@@ -18,6 +18,10 @@ let package = Package(
             dependencies: [
                 .product(name: "FlutterFramework", package: "FlutterFramework")
             ]
+        ),
+        .testTarget(
+            name: "qr_code_scanner_plusTests",
+            dependencies: ["qr_code_scanner_plus"]
         )
     ]
 )
