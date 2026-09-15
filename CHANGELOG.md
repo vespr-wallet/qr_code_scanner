@@ -1,4 +1,4 @@
-## Unreleased
+## 2.3.0
 
 - [iOS] Prefer virtual rear cameras that can switch to the ultra-wide lens for close-range QR scanning while preserving the standard wide-angle framing (#17).
 - [iOS] Register the plugin for the `UIScene` lifecycle while retaining legacy application lifecycle registration. Document the separate host-app migration required for `UIScene` (#30).
