@@ -12,6 +12,7 @@
 .buildlog/
 .history
 .svn/
+.worktrees/
 .last_build_id
 
 # IntelliJ related
