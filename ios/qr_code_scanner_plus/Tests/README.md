@@ -9,8 +9,9 @@ xcrun simctl list devices available
 
 The script builds the example to prepare Flutter's framework, then runs the Swift
 package's XCTest target in a generated workspace under `build/ios-tests`.
-The tests verify scene and legacy delegate registration share one plugin instance
-and register the platform view factory only once. No camera access is required.
+The tests verify camera-device preference and initial virtual-camera zoom, and
+that scene and legacy delegate registration share one plugin instance and register
+the platform view factory only once. No camera access is required.
 The iOS GitHub Actions workflow runs the same helper for relevant pushes and pull
 requests, including changes to the helper itself.
 
