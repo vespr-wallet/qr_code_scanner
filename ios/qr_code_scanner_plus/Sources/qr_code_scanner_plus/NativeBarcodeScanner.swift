@@ -54,11 +54,17 @@ class NativeBarcodeScanner: NSObject, AVCaptureMetadataOutputObjectsDelegate {
                 .first { $0.activationState == .foregroundActive }
         let orientation = scene?.interfaceOrientation ?? .portrait
 
+        connection.videoOrientation = Self.videoOrientation(for: orientation)
+    }
+
+    static func videoOrientation(for orientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation {
+        // Interface and capture orientations use the same landscape directions.
+        // Only UIDeviceOrientation requires swapping left and right.
         switch orientation {
-        case .landscapeLeft:      connection.videoOrientation = .landscapeRight
-        case .landscapeRight:     connection.videoOrientation = .landscapeLeft
-        case .portraitUpsideDown: connection.videoOrientation = .portraitUpsideDown
-        default:                  connection.videoOrientation = .portrait
+        case .landscapeLeft:      return .landscapeLeft
+        case .landscapeRight:     return .landscapeRight
+        case .portraitUpsideDown: return .portraitUpsideDown
+        default:                  return .portrait
         }
     }
 

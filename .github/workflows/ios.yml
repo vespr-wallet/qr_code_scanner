@@ -1,0 +1,32 @@
+name: iOS orientation tests
+
+on:
+  push:
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios.yml'
+  pull_request:
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios.yml'
+
+jobs:
+  orientation:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Boot an iOS simulator
+        id: simulator
+        run: |
+          device_id="$(xcrun simctl list devices available --json | jq -er '
+            .devices | to_entries
+            | map(select(.key | contains(".iOS-")) | .value[])
+            | .[0].udid
+          ')"
+          xcrun simctl bootstatus "$device_id" -b
+          echo "udid=$device_id" >> "$GITHUB_OUTPUT"
+      - name: Run orientation regression tests
+        env:
+          SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
+        run: ios/Tests/run_orientation_tests.sh "$SIMULATOR_UDID"

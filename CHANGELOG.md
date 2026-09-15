@@ -1,3 +1,7 @@
+## Unreleased
+
+- [iOS] Fix the camera preview appearing upside down in landscape by preserving landscape directions when converting the window scene's interface orientation to the capture orientation (#29).
+
 ## 2.2.0
 
 - Migrated to built-in Kotlin (AGP 9.0 compatibility). Removed `apply plugin: 'kotlin-android'` and the Kotlin Gradle Plugin classpath from `android/build.gradle`; same change in the example app's `example/android/app/build.gradle`. The `kotlin.compilerOptions { jvmTarget = JVM_17 }` block is now used in place of the legacy `kotlinOptions` block.
